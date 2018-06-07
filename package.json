@@ -1,0 +1,25 @@
+{
+  "name": "scoresystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "supervisor ./server/bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaojieLiu/scoreSystem.git"
+  },
+  "keywords": [
+    "score",
+    "rank",
+    "system"
+  ],
+  "author": "liushaojie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShaojieLiu/scoreSystem/issues"
+  },
+  "homepage": "https://github.com/ShaojieLiu/scoreSystem#readme"
+}
