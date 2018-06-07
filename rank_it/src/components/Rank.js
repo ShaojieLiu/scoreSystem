@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-class Rank extends Component {
+export default class Rank extends Component {
     constructor() {
-
+        super()
     }
 
     render() {
