@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import {Table} from 'antd'
+import {getSum} from '../helpers/math';
 import _ from 'lodash'
 export default class SimpleTable extends Component {
     render() {
 
-      // const {colName, rankObj, needTotal} = this.this.props
+      const {colName, rankObj, needTotal} = this.props
 
-      const needTotal = true
-      const colName = ['评分者', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
-      const rankObj = [
-        ['A',1,2,3,4,5,6,7],
-        ['B',1,2,3,4,5,6,7],
-        ['C',1,2,3,4,5,6,7],
-        ['D',1,2,3,4,5,6,7],
-        ['E',1,2,3,4,5,6,7],
-        ['F',1,2,3,4,5,6,7],
-        ['G',1,2,3,4,5,6,7],
-        
-        // ['总分',7,14,21,28,35,42,49],
-      ]
-      const total = rankObj[0].map((_, index) => arrSum(rankObj.map(arr => arr[index])))
-      total[0] = '总分'
+      // const needTotal = true
+      // const colName = ['评分者', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
+      // const rankObj = [
+      //   ['A',1,2,3,4,5,6,7],
+      //   ['B',1,2,3,4,5,6,7],
+      //   ['C',1,2,3,4,5,6,7],
+      //   ['D',1,2,3,4,5,6,7],
+      //   ['E',1,2,3,4,5,6,7],
+      //   ['F',1,2,3,4,5,6,7],
+      //   ['G',1,2,3,4,5,6,7],
+      //   // ['总分',7,14,21,28,35,42,49],
+      // ]
+      // const total = rankObj[0].map((_, index) => arrSum(rankObj.map(arr => arr[index])))
+      // total[0] = '总分'
 
-      needTotal && rankObj.push(total)
+      needTotal && rankObj.push(getSum(rankObj))
 
       // rankObj.map(obj => _.map(obj, (arr, owner) => arr.unshift(owner)))
       const dataSource = rankObj.map(arr => {
@@ -62,6 +62,7 @@ export default class SimpleTable extends Component {
           dataSource,
           columns,
           pagination: false,
+          size: 'small',
         }}/>
     }
 }
