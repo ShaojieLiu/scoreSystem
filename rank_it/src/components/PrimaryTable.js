@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Input, Button, message } from 'antd';
+import { Input, Button, message, Table } from 'antd';
 import axiosInstance from '../helpers/axiosInstance';
+import _ from 'lodash';
 import {getSum, arrSum} from '../helpers/math';
 export default class Experiment extends Component {
     constructor() {
@@ -13,22 +14,21 @@ export default class Experiment extends Component {
             const data = res.data;
             console.log('res', data);
             this.setState(data);
+            axiosInstance.get('/score/get', {
+                params: {
+                    data: JSON.stringify(data),
+                },
+            }).then((res) => {
+                this.setState({score: res.data});
+                console.log('score res', res.data);
+            });
         });
     }
 
     state = {
         title: '',
-        score: {
-            '江华': '1',
-            '少杰': '2',
-            // '泽标': '3',
-            // '志豪': '4',
-            // '美琪': '5',
-            // '锦涛': '6',
-            // '广杰': '7',
-        },
         name: [],
-        self: '江华',
+        score: [],
     }
 
     handleChangeScore = (e) => {
@@ -78,7 +78,7 @@ export default class Experiment extends Component {
             if (!nameCorrect) {
                 info = '您输入的名字务必是与会人员之一';
             } else if (!scoreLengthCorrect) {
-                info = `请填写所有与会人员的排名: ${Object.keys(data.score).length} / ${data.name.length}`;
+                info = '请填写所有与会人员的排名';
             } else if (!scoreRepeatCorrect) {
                 info = '排名不可出现重复';
             }
@@ -87,32 +87,31 @@ export default class Experiment extends Component {
     }
 
     render() {
-        const arr = this.state.name.map(name => {
-            return <Input 
-                key={name}
-                name={name}
-                addonBefore={name}
-                placeholder={`请输入 ${name} 童鞋的排名`} 
-                value={ this.state.score[name] }
-                onChange={ this.handleChangeScore }
-            />
+        const getSourceUnit = (score, index, self) => {
+            const res = _.cloneDeep(score);
+            res.key = index;
+            res['评分者'] = self;
+            return res;
+        }
+
+        const getColumnUnit = (columnName, option) => ({
+            title: `${columnName}${option ? '(排名)' : ''}`,
+            dataIndex: columnName,
+            key: columnName,
         });
+
+        const dataSource = this.state.score.map((item, index) => getSourceUnit(item.score, index, item.self));
+        const columns = this.state.score.map(item => getColumnUnit(item.self, true));
+        columns.unshift(getColumnUnit('评分者'));
+
+        console.log('dataSource', dataSource);
 
         return <div>
             <br/>
-            与会人员 : 排名
+            原始表
             <br/>
             <br/>
-            <Input 
-                name={'你的名字'}
-                addonBefore={'你的名字'}
-                placeholder={'你的名字务必是与会人员其中之一'} 
-                value={ this.state.self }
-                onChange={ this.handleChangeSelf }
-            />
-            <br/>
-            <br/>
-            { arr }
+            <Table dataSource={dataSource} columns={columns} />            
             <br/>
             <br/>
             <Button 

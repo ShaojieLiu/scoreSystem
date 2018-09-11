@@ -3,8 +3,9 @@ import './App.css';
 import { Tabs } from 'antd';
 import Rank from './components/Rank';
 import Experiment from './components/Experiment';
-import PersonTable from './components/PersonTable';
 import Config from './components/Config';
+import PersonTable from './components/PersonTable';
+import PrimaryTable from './components/PrimaryTable';
 // import arrayMath from './helpers/array.math';
 
 const TabPane = Tabs.TabPane;
@@ -18,9 +19,10 @@ class App extends Component {
     return (
       <div className="App">
         
-        <Tabs defaultActiveKey="6" onChange={callback}>
+        <Tabs defaultActiveKey="7" onChange={callback}>
           <TabPane tab="Config" key="5"><Config/></TabPane>
           <TabPane tab="PersonTable" key="6"><PersonTable/></TabPane>
+          <TabPane tab="PrimaryTable" key="7"><PrimaryTable/></TabPane>
           <TabPane tab="Experiment" key="4"><Experiment/></TabPane>
           <TabPane tab="Rank" key="1"><Rank/></TabPane>
           <TabPane tab="Additional Points" key="2">Content of Tab Pane 2</TabPane>

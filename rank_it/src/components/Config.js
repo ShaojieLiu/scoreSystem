@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input } from 'antd';
+import { Input, Button, message } from 'antd';
 import axiosInstance from '../helpers/axiosInstance';
 import {getSum, arrSum} from '../helpers/math';
 
@@ -11,7 +11,7 @@ export default class Experiment extends Component {
 
     initState() {
         axiosInstance.get('/config/get').then((res) => {
-            const data = JSON.parse(res.data);
+            const data = res.data;
             console.log('res', data);
             this.setState(data);
         })
@@ -33,7 +33,8 @@ export default class Experiment extends Component {
         console.log('handleChangeTitle', title);
     }
 
-    componentDidUpdate() {
+    handleStart = (e) => {
+        e.target.disabled = true;
         const data = {
             name: this.state.name,
             title: this.state.title,
@@ -42,7 +43,9 @@ export default class Experiment extends Component {
             params: {
                 data: JSON.stringify(data),
             }, 
-        })
+        }).then((res) => {
+            message.success(res.data)
+        });
     }
 
     render() {
@@ -68,6 +71,10 @@ export default class Experiment extends Component {
             />
             <br/>
             <br/>
+            <Button 
+                type="primary"
+                onClick={ this.handleStart }
+            >会议开始</Button>
         </div>
     }
 }
