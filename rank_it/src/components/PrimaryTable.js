@@ -3,6 +3,7 @@ import { Input, Button, message, Table } from 'antd';
 import axiosInstance from '../helpers/axiosInstance';
 import _ from 'lodash';
 import {getSum, arrSum} from '../helpers/math';
+import EditableCell from './EditableCell';
 export default class Experiment extends Component {
     constructor() {
         super();
@@ -29,6 +30,7 @@ export default class Experiment extends Component {
         title: '',
         name: [],
         score: [],
+        addition: {},
     }
 
     handleChangeScore = (e) => {
@@ -41,16 +43,20 @@ export default class Experiment extends Component {
         });
     }
 
-    handleChangeSelf = (e) => {
-        const self = e.target.value;
-        this.setState({self});
+    handleChangeAddition = (e) => {
+        const k = e.target.name;
+        const v = e.target.value;
+        this.setState(state => {
+            state.addition[k] = v;
+            return state;
+        });
     }
 
     handleSubmit = (e) => {
         // e.target.disabled = true;
         const data = {
-            self: this.state.self,
-            score: this.state.score,
+            self: 'addition',
+            score: this.state.addition,
             title: this.state.title,
             name: this.state.name,
         };
@@ -65,25 +71,7 @@ export default class Experiment extends Component {
             });
         }
 
-        const nameCorrect = data.name.indexOf(data.self) !== -1
-        const scoreLengthCorrect = Object.keys(data.score).length === data.name.length;
-        const scoreRepeatCorrect = new Set(Object.values(data.score)).size === data.name.length;
-
-        const canSubmit = nameCorrect && scoreLengthCorrect && scoreRepeatCorrect;
-
-        if (canSubmit) {
-            submit();
-        } else {
-            let info = 'This is a message of error';
-            if (!nameCorrect) {
-                info = '您输入的名字务必是与会人员之一';
-            } else if (!scoreLengthCorrect) {
-                info = '请填写所有与会人员的排名';
-            } else if (!scoreRepeatCorrect) {
-                info = '排名不可出现重复';
-            }
-            message.error(info);
-        }
+        submit();
     }
 
     render() {
@@ -101,24 +89,45 @@ export default class Experiment extends Component {
         });
 
         const dataSource = this.state.score.map((item, index) => getSourceUnit(item.score, index, item.self));
-        const columns = this.state.score.map(item => getColumnUnit(item.self, true));
-        columns.unshift(getColumnUnit('评分者'));
+        const columns = this.state.score.map(item => {
+            const col = getColumnUnit(item.self, true);
+            // col.width = 150;
+            return col;
+        });
+        columns.unshift(Object.assign({width: 150}, getColumnUnit('评分者')));
 
-        console.log('dataSource', dataSource);
+        // console.log('dataSource', dataSource);
+
+        const additionInput = (<div style={{display: 'flex', alignItems: 'center'}} >
+            <div style={{width: 150, flex: 'none', textAlign: 'left', padding: 16}}>附加分: </div>
+            {this.state.name.map(n => <Input 
+                key={n}
+                name={n}
+                placeholder={`${n} 附加分`} 
+                value={ this.state.addition[n] }
+                onChange={ this.handleChangeAddition }
+            />)}
+        </div>)
 
         return <div>
             <br/>
             原始表
             <br/>
             <br/>
-            <Table dataSource={dataSource} columns={columns} />            
+            <Table 
+                dataSource={dataSource} 
+                columns={columns} 
+                pagination={false}
+            />  
+            { additionInput }
             <br/>
             <br/>
             <Button 
                 type="primary"
                 onClick={ this.handleSubmit }
-            >提交分数</Button>
+            >提交附加分</Button>
             <br/>
         </div>
     }
 }
+
