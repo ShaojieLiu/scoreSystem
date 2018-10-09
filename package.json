@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd server && yarn run dev & cd rank_it && yarn run dev"
+    "dev": "cd rank_it && yarn run dev & cd egg-rankit && yarn run dev"
   },
   "repository": {
     "type": "git",

@@ -12,10 +12,15 @@ class HomeController extends Controller {
   async get() {
     const { data } = this.ctx.query;
     const obj = JSON.parse(data);
-    const result = obj.name.map(n => {
+    const names = obj.name;
+    const result = names.map(n => {
       const scorePath = path.join(publicPath, obj.title, `${n}.json`);
-      const str = fs.readFileSync(scorePath, 'utf-8');
-      return JSON.parse(str);
+      const exist = fs.existsSync(scorePath);
+      if (exist) {
+        const str = fs.readFileSync(scorePath, 'utf-8');
+        return JSON.parse(str);
+      }
+      return { self: n, score: {} };
     });
     console.log('score 读取成功', result);
     this.ctx.body = result;

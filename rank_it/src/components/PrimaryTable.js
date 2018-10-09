@@ -15,12 +15,18 @@ export default class Experiment extends Component {
             const data = res.data;
             console.log('res', data);
             this.setState(data);
+
+            const query = _.cloneDeep(data);
+            query.name.push('addition');
             axiosInstance.get('/score/get', {
                 params: {
-                    data: JSON.stringify(data),
+                    data: JSON.stringify(query),
                 },
             }).then((res) => {
-                this.setState({score: res.data});
+                const score = this.state.name.map(n => res.data.filter(item => item.self === n)[0]);
+                const addition = res.data.filter(item => item.self === 'addition')[0].score;
+                this.setState({score});
+                this.setState({addition});
                 console.log('score res', res.data);
             });
         });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button, message } from 'antd';
+import { Input, Button, message, Menu, Dropdown, Icon } from 'antd';
 import axiosInstance from '../helpers/axiosInstance';
 import {getSum, arrSum} from '../helpers/math';
 export default class Experiment extends Component {
@@ -19,8 +19,8 @@ export default class Experiment extends Component {
     state = {
         title: '',
         score: {
-            '江华': '1',
-            '少杰': '2',
+            // '江华': '1',
+            // '少杰': '2',
             // '泽标': '3',
             // '志豪': '4',
             // '美琪': '5',
@@ -28,7 +28,7 @@ export default class Experiment extends Component {
             // '广杰': '7',
         },
         name: [],
-        self: '江华',
+        // self: '江华',
     }
 
     handleChangeScore = (e) => {
@@ -44,6 +44,10 @@ export default class Experiment extends Component {
     handleChangeSelf = (e) => {
         const self = e.target.value;
         this.setState({self});
+    }
+
+    handleSelectSelf = (name) => () => {
+        this.setState({self: name});
     }
 
     handleSubmit = (e) => {
@@ -98,18 +102,27 @@ export default class Experiment extends Component {
             />
         });
 
+        const menu = (
+            <Menu>
+                {this.state.name.map(n => (
+                    <Menu.Item value={n} key={n} onClick={this.handleSelectSelf(n)}>
+                        {n}
+                    </Menu.Item>)
+                )}
+            </Menu>
+        );
+
         return <div>
             <br/>
-            与会人员 : 排名
+            与会人员 | 排名
             <br/>
             <br/>
-            <Input 
-                name={'你的名字'}
-                addonBefore={'你的名字'}
-                placeholder={'你的名字务必是与会人员其中之一'} 
-                value={ this.state.self }
-                onChange={ this.handleChangeSelf }
-            />
+            <Dropdown overlay={menu}>
+                {this.state.self ? 
+                    <a className="ant-dropdown-link"> 评分者: {this.state.self} <Icon type="down" /> </a> 
+                    : <a className="ant-dropdown-link"> 选择你的名字 <Icon type="down" /> </a>
+                }
+            </Dropdown>
             <br/>
             <br/>
             { arr }

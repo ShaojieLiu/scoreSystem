@@ -1,32 +1,95 @@
 import React, { Component } from 'react';
 import SimpleTable from './SimpleTable';
 import {getSum, arrSum} from '../helpers/math';
+import { Input, Button, message, Table } from 'antd';
+import axiosInstance from '../helpers/axiosInstance';
+import _ from 'lodash';
+import EditableCell from './EditableCell';
+
 export default class Experiment extends Component {
     constructor() {
         super()
+        this.initState();
+    }
+
+    initState() {
+        axiosInstance.get('/config/get').then((res) => {
+            const data = res.data;
+            console.log('res', data);
+            this.setState(data);
+
+            const query = _.cloneDeep(data);
+            query.name.push('addition');
+            axiosInstance.get('/score/get', {
+                params: {
+                    data: JSON.stringify(query),
+                },
+            }).then((res) => {
+                const score = this.state.name.map(n => res.data.filter(item => item.self === n)[0]);
+                const addition = res.data.filter(item => item.self === 'addition')[0].score;
+                
+                const rankMatrix = this.state.name.map((n, i) => {
+                    const selfScore = score[i].score
+                    return [n].concat(this.state.name.map(n => Number(selfScore[n])))
+                })
+                console.log('rankMatrix', rankMatrix)
+                const additionArr = ['附加分'].concat(this.state.name.map(n => addition[n]));
+                this.setState({score, addition, additionArr, rankMatrix});
+                console.log('score res', res.data);
+            });
+        });
     }
 
     state = {
-        num: 7,
-        rankMatrix: [],
-        sum: [],
+        title: '',
+        name: [],
+        score: [],
+        addition: {},
+
+        rankMatrix: undefined,
+        additionArr: [],
     }
 
     render() {
-        const tableData = getTableData()
+        const tableData = this.getTableData()
         const {rankObj} = tableData
 
         return <div>
-            随机分数: 
+            分数汇总 
+            <br/>
+            <br/>
             <SimpleTable {...tableData}/>
+            <br/>
             公式: { getTotalFormula.toString() }
             <br/>
-            变动量统计: { arrSum(rankObj.slice(-1)[0].slice(1)) }
+            人均变动量: { arrSum(rankObj.slice(-1)[0].slice(1)) / this.state.name.length }
         </div>
+    }
+
+    getTableData = () => {
+        const rankObj = this.state.rankMatrix || getRandomTable()
+        console.log('rankObj', rankObj)
+        const add = this.state.additionArr
+        const colName = [' '].concat(this.state.name)
+        // const rankObj = getRandomTable()
+        // const add = getRandomAdd()
+        // const colName = getColName()
+
+        const sum = getSum(rankObj)
+    
+        const total1 = getTotal('原始分数', sum)
+        const total2 = getTotal('加分后分数', sum, add)
+    
+        const rank1 = getRank(total1, '原始排名')
+        const rank2 = getRank(total2, '加分后排名')
+    
+        const change = getChange(rank1, rank2, '变动量')
+        rankObj.push(sum, total1, rank1, add, total2, rank2, change)
+        return {needTotal: false, colName, rankObj}
     }
 }
 
-const colName = ['评分者', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
+const getColName = () => ['评分者', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 const getRandomTable = () => {
     return [
@@ -46,8 +109,9 @@ const getRandomAdd = () => {
 }
 
 const getRank = (arr, name) => {
+    console.log('arr, name', arr, name)
     let res = arr.slice(1)
-    const bigFirst = res.sort((a, b) => a < b)
+    const bigFirst = _.clone(res).sort((a, b) => a < b)
     res = res.map(v => bigFirst.indexOf(v) + 1)
     res.unshift(name)
     return res
@@ -61,21 +125,21 @@ const getChange = (arr1, arr2, name) => {
     return res
 }
 
-const getTableData = () => {
-    const rankObj = getRandomTable()
-    const sum = getSum(rankObj)
-    const add = getRandomAdd()
+// const getTableData = () => {
+//     const rankObj = getRandomTable()
+//     const sum = getSum(rankObj)
+//     const add = getRandomAdd()
 
-    const total1 = getTotal('原始分数', sum)
-    const total2 = getTotal('加分后分数', sum, add)
+//     const total1 = getTotal('原始分数', sum)
+//     const total2 = getTotal('加分后分数', sum, add)
 
-    const rank1 = getRank(total1, '原始排名')
-    const rank2 = getRank(total2, '加分后排名')
+//     const rank1 = getRank(total1, '原始排名')
+//     const rank2 = getRank(total2, '加分后排名')
 
-    const change = getChange(rank1, rank2, '变动量')
-    rankObj.push(sum, add, total1, total2, rank1, rank2, change)
-    return {needTotal: false, colName, rankObj}
-}
+//     const change = getChange(rank1, rank2, '变动量')
+//     rankObj.push(sum, add, total1, total2, rank1, rank2, change)
+//     return {needTotal: false, colName, rankObj}
+// }
 
 const getTotalFormula = (arr1, arr2) => (_, i) => 100 - 0.5 * arr1[i] + 2 * arr2[i]
 
