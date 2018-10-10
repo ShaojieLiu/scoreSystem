@@ -66,6 +66,8 @@ export default class Experiment extends Component {
         </div>
     }
 
+    getEmptyRow = (char) => [char].concat(this.state.name.map(() => char));
+
     getTableData = () => {
         const rankObj = this.state.rankMatrix || getRandomTable()
         console.log('rankObj', rankObj)
@@ -75,6 +77,7 @@ export default class Experiment extends Component {
         // const add = getRandomAdd()
         // const colName = getColName()
 
+        const empty = this.getEmptyRow('');
         const sum = getSum(rankObj)
     
         const total1 = getTotal('原始分数', sum)
@@ -84,7 +87,18 @@ export default class Experiment extends Component {
         const rank2 = getRank(total2, '加分后排名')
     
         const change = getChange(rank1, rank2, '变动量')
-        rankObj.push(sum, total1, rank1, add, total2, rank2, change)
+        rankObj.push(
+            // empty, 
+            sum, 
+            total1, 
+            rank1, 
+            // empty, 
+            add, 
+            total2, 
+            rank2, 
+            // empty, 
+            change
+        )
         return {needTotal: false, colName, rankObj}
     }
 }
@@ -141,7 +155,7 @@ const getChange = (arr1, arr2, name) => {
 //     return {needTotal: false, colName, rankObj}
 // }
 
-const getTotalFormula = (arr1, arr2) => (_, i) => 100 - 0.5 * arr1[i] + 2 * arr2[i]
+const getTotalFormula = (primaryScore, additionScore) => (_, i) => 100 - 0.5 * primaryScore[i] + 2 * additionScore[i]
 
 const getTotal = (name, arr1, arr2) => {
     arr1 = arr1.slice(1)

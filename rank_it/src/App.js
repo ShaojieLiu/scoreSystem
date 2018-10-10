@@ -19,7 +19,7 @@ class App extends Component {
     return (
       <div className="App">
         
-        <Tabs defaultActiveKey="2" onChange={callback}>
+        <Tabs defaultActiveKey="4" onChange={callback}>
           <TabPane tab="Config" key="1"><Config/></TabPane>
           <TabPane tab="PersonTable" key="2"><PersonTable/></TabPane>
           <TabPane tab="PrimaryTable" key="3"><PrimaryTable/></TabPane>
