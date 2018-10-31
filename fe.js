@@ -1,12 +1,8 @@
 var express = require('express');
 var app = express();
-var port = 3001;
+var port = 3002;
 
-app.use('/', express.static('build'))
-
-// app.get('/', function (req, res) {
-//   res.send('Hello World!');
-// });
+app.use('/static', express.static('rank_it/build'));
 
 app.listen(port, function () {
   console.log(`Example app listening on port ${port}!`);

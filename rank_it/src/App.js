@@ -14,6 +14,8 @@ function callback(key) {
   console.log(key);
 }
 
+console.log(process.env.PUBLIC_URL);
+
 class App extends Component {
   render() {
     return (
