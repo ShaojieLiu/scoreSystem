@@ -11,6 +11,21 @@ module.exports = appInfo => {
 
   // config.security = false;
 
+  config.assets = {
+    url: '/',
+    publicPath: '/public',
+    // devServer: {
+    //   command: 'umi dev',
+    //   port: 8000,
+    //   // env: {
+    //   //   APP_ROOT: path.join(__dirname, '../app/web'),
+    //   //   BROWSER: 'none',
+    //   //   // SOCKET_SERVER: 'http://127.0.0.1:8000',
+    //   // },
+    //   debug: true,
+    // },
+  };
+
   config.cors = {
     origin: '*',
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
