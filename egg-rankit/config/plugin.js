@@ -5,7 +5,7 @@
 exports.security = false;
 
 exports.assets = {
-  enable: true,
+  enable: false,
   package: 'egg-view-assets',
 };
 

@@ -25,6 +25,8 @@ app.use(cookieParser());
 
 
 app.use('/users', usersRouter);
+app.use(proxy('/score', { target: 'http://172.18.91.195:7001' }))
+app.use(proxy('/config', { target: 'http://172.18.91.195:7001' }))
 app.use(proxy('/', { target: 'http://localhost:3001' })) // 完全代理了devserver
 
 // app.use('/', indexRouter);
