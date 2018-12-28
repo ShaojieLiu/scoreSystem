@@ -20,7 +20,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Tabs defaultActiveKey="4" onChange={callback}>
+        <Tabs defaultActiveKey="2" onChange={callback}>
           <TabPane tab="Config" key="1">
             <Config />
           </TabPane>
