@@ -53,7 +53,7 @@ export default class Experiment extends Component {
     name: [],
     score: [],
     addition: {},
-    addParam: 2,
+    addParam: 3,
 
     rankMatrix: undefined,
     additionArr: []
