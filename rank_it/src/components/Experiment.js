@@ -24,12 +24,12 @@ export default class Experiment extends Component {
       axiosInstance
         .get("/score/get", {
           params: {
-            data: JSON.stringify(query)
-          }
+            data: JSON.stringify(query),
+          },
         })
         .then(res => {
           const score = this.state.name.map(
-            n => res.data.filter(item => item.self === n)[0]
+            n => res.data.filter(item => item.self === n)[0],
           );
           const addition = res.data.filter(item => item.self === "addition")[0]
             .score;
@@ -40,7 +40,7 @@ export default class Experiment extends Component {
           });
           console.log("rankMatrix", rankMatrix);
           const additionArr = ["附加分"].concat(
-            this.state.name.map(n => addition[n])
+            this.state.name.map(n => addition[n]),
           );
           this.setState({ score, addition, additionArr, rankMatrix });
           console.log("score res", res.data);
@@ -53,10 +53,10 @@ export default class Experiment extends Component {
     name: [],
     score: [],
     addition: {},
-    addParam: 3,
+    addParam: 4,
 
     rankMatrix: undefined,
-    additionArr: []
+    additionArr: [],
   };
 
   render() {
@@ -121,7 +121,7 @@ export default class Experiment extends Component {
       total2,
       rank2,
       // empty,
-      change
+      change,
     );
     return { needTotal: false, colName, rankObj };
   };
@@ -137,7 +137,7 @@ const getRandomTable = () => {
     ["D", 1, 2, 3, 4, 5, 6, 7],
     ["E", 1, 2, 3, 4, 5, 6, 7],
     ["F", 1, 2, 3, 4, 5, 6, 7],
-    ["G", 1, 2, 3, 4, 5, 6, 7]
+    ["G", 1, 2, 3, 4, 5, 6, 7],
     // ['总分',7,14,21,28,35,42,49],
   ];
 };
