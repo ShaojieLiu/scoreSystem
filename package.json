@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/ShaojieLiu/scoreSystem#readme",
   "dependencies": {
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.21"
   }
 }
